@@ -85,17 +85,17 @@ float StringPeriphery::get_temp_cam_intern2()
 float StringPeriphery::get_v_hv()
 {
     uint16_t val = analog_inp.readADC(1);
-    return 0;
+    return val;
 };
 float StringPeriphery::get_a_hv()
 {
     uint16_t val = analog_inp.readADC(2);
-    return 0;
+    return val;
 };
 float StringPeriphery::get_v_press()
 {
     uint16_t val = analog_inp.readADC(0);
-    return 0;
+    return val;
 };
 void StringPeriphery::idle()
 {
@@ -116,7 +116,7 @@ void StringPeriphery::idle()
     if(dt_temp>200)
     {
         pressure = get_v_press();
-        HV = mcp4725_hv_v.getValue();
+        HV = get_v_hv();// mcp4725_hv_v.getValue();
         max6675_temp_cam_ext.read(); 
         max6675_temp_cam_intern_1.read(); 
         max6675_temp_cam_intern_2.read(); 
@@ -124,6 +124,8 @@ void StringPeriphery::idle()
         temp_val_int2 = max6675_temp_cam_intern_2.getTemperature();
         temp_val_ext = max6675_temp_cam_ext.getTemperature();
         time_measure_temp = cur_time;
+
+        manage_heat();
     }
     //--------------------------------------------------------
      unsigned long dt_enc = (cur_time- time_measure_enc);
@@ -139,7 +141,7 @@ void StringPeriphery::idle()
         time_measure_enc = cur_time;
      }
 
-     manage_heat();
+     
 };
 void StringPeriphery::set_hv_v(uint16_t v)
 {
