@@ -180,6 +180,12 @@ void StringPeriphery::set_reley_2(int v)
     reley_2 = v;
 };
 
+void StringPeriphery::set_reley_heater(int ind, int v)
+{
+    if(ind == 0) set_reley_1(v);
+    else if(ind == 1) set_reley_2(v);
+};
+
 void StringPeriphery::set_reley_HV(int v)
 {
     int v_set = 0;
@@ -268,12 +274,12 @@ void StringPeriphery::manage_heat()
             set_reley_2(0);
             return;
         }
-        if(cur_temp<temp_dest-temp_hyst)
+        if(cur_temp<temp_dest+temp_hyst)
         {
             set_reley_1(1);
             set_reley_2(1);
         }
-        else if(cur_temp>temp_dest+temp_hyst)
+        else if(cur_temp>temp_dest-temp_hyst)
         {
             set_reley_1(0);
             set_reley_2(0);
@@ -284,7 +290,89 @@ void StringPeriphery::manage_heat()
         set_reley_1(0);
         set_reley_2(0);
     }
+
+
 }
+void StringPeriphery::manage_heat_duty()
+{
+    float temp_1 = temp_val_int1;
+    float temp_2 = temp_val_int2;
+    if(ind_sensor == 0)
+    {
+        temp_1 = temp_val_ext;
+        temp_2 = temp_val_ext;  
+    }
+    if(heater_en == 1)
+    {
+        duty_1 = manage_heat_duty_single(0, temp_1,kp_1);
+        duty_2 = manage_heat_duty_single(1, temp_2,kp_2);
+
+        if(duty_1 < 0) heating_1 = false; else heating_1 = true;
+        if(duty_2 < 0) heating_2 = false; else heating_2 = true;
+    }
+    else
+    {
+        set_reley_1(0);
+        set_reley_2(0);
+    }
+
+    heat_pwm_control();
+}
+
+int StringPeriphery::manage_heat_duty_single(int ind, float temp,float kp)
+{    
+    bool heating = false;
+    int duty = 0;
+    if(temp<temp_dest+temp_hyst)
+    {
+        
+        heating = true;
+    }
+    else if(temp>temp_dest-temp_hyst)
+    {
+        heating = false;
+    }  
+    else
+    {
+        heating = false;
+    }
+
+    if(!heating)
+    {
+        return -1;
+    }
+
+    duty = kp* abs(temp_dest-temp);
+    if(duty>cycle_time-5) duty = cycle_time-5;
+    
+
+    return duty;
+}
+void StringPeriphery::heat_pwm_control()
+{
+    if(heating_1) heat_pwm_control_single(0, duty_counter, duty_1); else  set_reley_1(0);
+    if(heating_2) heat_pwm_control_single(1, duty_counter, duty_2); else  set_reley_2(0);
+    
+    duty_counter++;
+    if(duty_counter>cycle_time) 
+    {
+        duty_counter = 0;       
+    }
+};
+void StringPeriphery::heat_pwm_control_single(int ind, int counter, int duty)
+{
+    if(counter==0)
+    {
+        set_reley_heater(ind,1);
+    }
+    else if(counter == duty)
+    {
+        set_reley_heater(ind,0);
+    }
+
+};
+
+
 
 void StringPeriphery::set_heaters_enable(int v)
 {

@@ -50,4 +50,13 @@ void GcodeSuite::M579() {
   {
     string_manager.set_heaters_ind(parser.intval('N'));
   }
+
+  if (parser.seen('K') ) 
+  {
+    string_manager.kp_1 = parser.floatval('K');
+  }
+  if (parser.seen('P') ) 
+  {
+    string_manager.kp_2 = parser.floatval('P');
+  }
 }

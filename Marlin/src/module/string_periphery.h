@@ -68,6 +68,7 @@ float get_temp_cam_intern2();
 
 void set_reley_1(int v);
 void set_reley_2(int v);
+void set_reley_heater(int ind,int v);
 
 void set_reley_HV(int v);
 void set_reley_press(int v);
@@ -80,11 +81,16 @@ void set_heaters_ind(int v);
 void set_heaters_temp(float v);
 
 void manage_heat();
+void manage_heat_duty();
+int manage_heat_duty_single(int ind, float temp, float kp);
+void heat_pwm_control();
+void heat_pwm_control_single(int ind, int counter,int duty);
 
 void report_state();
 void set_reporting(bool state);
 long string_lenght = 0;
-
+float kp_1 = 0.5;
+float kp_2 = 0.5;
 private:
 
 unsigned long time_measure,time_measure_enc,time_measure_temp;
@@ -99,8 +105,15 @@ float HV = 0;//
 float temp_dest = 0;
 int ind_sensor = 0;
 int heater_en = 0;
-float temp_hyst = 10;
+float temp_hyst = 3;
 bool reporting = true;
 
+bool heating_1,heating_2;
+float duty_1,duty_2;
+
+int duty_time_1 = 0 ; 
+int duty_time_2 = 0 ; 
+int cycle_time = 50;
+int duty_counter = 0;
 };
 extern StringPeriphery string_manager;
