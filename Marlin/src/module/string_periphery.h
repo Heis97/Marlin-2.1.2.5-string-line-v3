@@ -89,8 +89,10 @@ void heat_pwm_control_single(int ind, int counter,int duty);
 void report_state();
 void set_reporting(bool state);
 long string_lenght = 0;
-float kp_1 = 0.5;
-float kp_2 = 0.5;
+float kp_1 = 0.05;
+float kp_2 = 0.05;
+int cycle_time = 50;
+int period_manage_ms = 200;
 private:
 
 unsigned long time_measure,time_measure_enc,time_measure_temp;
@@ -109,11 +111,12 @@ float temp_hyst = 3;
 bool reporting = true;
 
 bool heating_1,heating_2;
-float duty_1,duty_2;
+int duty_1 = 0;
+int duty_2 = 0;
 
 int duty_time_1 = 0 ; 
 int duty_time_2 = 0 ; 
-int cycle_time = 50;
+
 int duty_counter = 0;
 };
 extern StringPeriphery string_manager;

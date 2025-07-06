@@ -59,4 +59,11 @@ void GcodeSuite::M579() {
   {
     string_manager.kp_2 = parser.floatval('P');
   }
+
+    
+  if (parser.seen('L')) 
+  {
+      float time_s = parser.floatval('L');
+      string_manager.cycle_time = (int)((1000*time_s) / (float)string_manager.period_manage_ms);
+  }
 }

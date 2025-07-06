@@ -113,7 +113,7 @@ void StringPeriphery::idle()
 
     //--------------------------------------------------------
     unsigned long dt_temp = (cur_time- time_measure_temp);
-    if(dt_temp>200)
+    if(dt_temp>period_manage_ms)
     {
         pressure = get_v_press();
         HV = get_v_hv();// mcp4725_hv_v.getValue();
@@ -125,7 +125,7 @@ void StringPeriphery::idle()
         temp_val_ext = max6675_temp_cam_ext.getTemperature();
         time_measure_temp = cur_time;
 
-        manage_heat();
+        manage_heat_duty();
     }
     //--------------------------------------------------------
      unsigned long dt_enc = (cur_time- time_measure_enc);
@@ -241,6 +241,10 @@ void StringPeriphery::report_state()
     Serial.print(moves_planned);
     Serial.print(" ");
     Serial.print(time_measure);
+    Serial.print(" ");
+    Serial.print(duty_1);
+    Serial.print(" ");
+    Serial.print(duty_2);
     Serial.println(" ");
 };
 
@@ -309,6 +313,8 @@ void StringPeriphery::manage_heat_duty()
 
         if(duty_1 < 0) heating_1 = false; else heating_1 = true;
         if(duty_2 < 0) heating_2 = false; else heating_2 = true;
+
+        heat_pwm_control();
     }
     else
     {
@@ -316,7 +322,7 @@ void StringPeriphery::manage_heat_duty()
         set_reley_2(0);
     }
 
-    heat_pwm_control();
+    
 }
 
 int StringPeriphery::manage_heat_duty_single(int ind, float temp,float kp)
@@ -342,7 +348,7 @@ int StringPeriphery::manage_heat_duty_single(int ind, float temp,float kp)
         return -1;
     }
 
-    duty = kp* abs(temp_dest-temp);
+    duty = kp * abs(temp_dest-temp);
     if(duty>cycle_time-5) duty = cycle_time-5;
     
 
