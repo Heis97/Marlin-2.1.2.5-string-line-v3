@@ -138,6 +138,7 @@
   #define Z_MIN_PROBE_PIN                   PB7
 #endif
 #define I_STOP_PIN                  I_DIAG_PIN  
+#define J_STOP_PIN                  E2_DIAG_PIN
 //
 // Probe enable
 //
@@ -221,16 +222,17 @@
 #define I_DIR_PIN                          PE3
 #define I_ENABLE_PIN                       PD4
 #ifndef I_CS_PIN
-
-  #define E2_CS_PIN                         PE1
+  #define I_CS_PIN                         PE1
 #endif
 
-#define E3_STEP_PIN                         PE6   // MOTOR 7
-#define E3_DIR_PIN                          PA14
-#define E3_ENABLE_PIN                       PE0
-#ifndef E3_CS_PIN
-  #define E3_CS_PIN                         PD3
+#define J_STEP_PIN                         PE6   // MOTOR 7
+#define J_DIR_PIN                          PA14
+#define J_ENABLE_PIN                       PE0
+#ifndef J_CS_PIN
+  #define J_CS_PIN                         PD3
 #endif
+
+
 
 //
 // Temperature Sensors
@@ -243,8 +245,8 @@
 //
 // Heaters / Fans
 //
-#define HEATER_BED_PIN                      PA9 //PA10  // Hotbed
-#define HEATER_0_PIN                        PB8   // Heater0//PA0
+#define HEATER_BED_PIN                      PA10 //PA10  // Hotbed
+#define HEATER_0_PIN                        PA0   // Heater0//PA0
 #define HEATER_1_PIN                        PA3   // Heater1
 #define HEATER_2_PIN                        PA8  // Heater2 PB0
 #define HEATER_3_PIN                        PB11  // Heater3

@@ -3,11 +3,12 @@
 
 #include "../inc/MarlinConfig.h"
 //#include "../libs/Adafruit_MAX31865_sw.h"
+#include "../feature/twibus.h"
 #include "../libs/MAX6675.h"
 //#include "../libs/MAX31865.h"
 //#include "../libs/AS5048A.h"
-#include "../libs/AS5600.h"
-#include "../feature/twibus.h"
+#include "../libs/AS5600.h" 
+
 #include "../libs/MCP4725.h"
 #include "../libs/ADS1X15.h"
 #include "../libs/SparkFun_I2C_Mux_Arduino_Library.h"
@@ -88,11 +89,71 @@ void heat_pwm_control_single(int ind, int counter,int duty);
 
 void report_state();
 void set_reporting(bool state);
+
+//M580----------------------------------- 
+
+void manage_motion();
+int manage_axis(AxisEnum Axis, int vibr, int k, int k_m,int dir,int vibr_a, uint16_t step_mot,uint16_t dir_mot);
+
+
+
+//-----------------------------------
 long string_lenght = 0;
 float kp_1 = 0.05;
 float kp_2 = 0.05;
 int cycle_time = 50;
 int period_manage_ms = 200;
+
+int gateway_move = 0;
+int feed_pound_move = 0;
+int recuperator_move = 0;
+int karet_move = 0;
+int string_move = 0;
+int string_move_second = 0;
+
+float dist_m = 0.05;
+int buff_m = 11;
+
+int k_m_x = 2;
+int vibr_x = 0;
+int vibr_a_x = 0;
+int k_x = 0;
+int dir_x = 1;
+
+int k_m_y = 2;
+int vibr_y = 0;
+int vibr_a_y = 0;
+int k_y = 0;
+int dir_y = 1;
+
+int k_m_z = 2;
+int vibr_z = 0;
+int vibr_a_z = 0;
+int k_z = 0;
+int dir_z = 1;
+
+int k_m_e = 2;
+int vibr_e = 0;
+int vibr_a_e = 0;
+int k_e = 0;
+int dir_e = 1;
+
+int k_m_a = 2;
+int vibr_a = 0;
+int vibr_a_a = 0;
+int k_a = 0;
+int dir_a = 1;
+
+int k_m_b = 2;
+int vibr_b = 0;
+int vibr_a_b = 0;
+int k_b = 0;
+int dir_b = 1;
+
+
+int step_switch = 0;
+int dir_switch = 0;
+
 private:
 
 unsigned long time_measure,time_measure_enc,time_measure_temp;
@@ -117,6 +178,9 @@ int duty_2 = 0;
 int duty_time_1 = 0 ; 
 int duty_time_2 = 0 ; 
 
+
 int duty_counter = 0;
+
+
 };
 extern StringPeriphery string_manager;

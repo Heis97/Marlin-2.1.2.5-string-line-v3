@@ -938,6 +938,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       case 578: M578(); break; 
       case 579: M579(); break; 
       case 580: M580(); break; 
+      case 581: M581(); break; 
       #if HAS_ZV_SHAPING
         case 593: M593(); break;                                  // M593: Set Input Shaping parameters
       #endif

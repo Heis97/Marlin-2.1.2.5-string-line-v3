@@ -12,8 +12,7 @@ StringPeriphery  string_manager;
 
 void StringPeriphery::init()
 {
-    mux_iic.begin();
-
+    mux_iic.begin(112U,Wire);
     
   mcp4725_hv_v.begin();
   mcp4725_hv_v.setValue(0);
@@ -31,6 +30,7 @@ void StringPeriphery::init()
   max6675_temp_cam_ext.begin();
   max6675_temp_cam_intern_1.begin();
   max6675_temp_cam_intern_2.begin();
+  as5600_lin  = AS5600(&Wire);
   as5600_lin.begin(ENC_LIN_CS_PIN);
 
 
@@ -55,8 +55,8 @@ float StringPeriphery::get_vel(){return 0;};
 
 int16_t StringPeriphery::get_pos()
 {
-     int16_t pos  = as5600_lin.readAngle();
-   //  Serial.println(pos);
+    int16_t pos  = as5600_lin.readAngle();
+    //Serial.println(pos);
     return pos;
 };
 void StringPeriphery::set_vel_lin(float v){};
@@ -97,17 +97,29 @@ float StringPeriphery::get_v_press()
     uint16_t val = analog_inp.readADC(0);
     return val;
 };
+bool swap = false;
 void StringPeriphery::idle()
 {
+    manage_motion();
     unsigned long cur_time = millis();
     unsigned long dt = (cur_time- time_measure);
     //SERIAL_ECHOLNPGM("dt",dt);
-   
+    
     if(dt>20)
     {
         time_measure = cur_time;
         moves_planned =  planner.movesplanned();
         report_state();
+        /*if(swap){
+            digitalWrite(PB8,1);
+            
+            swap = false;
+        } 
+        else
+        {
+            digitalWrite(PB8,0);
+            swap = true;
+        }*/
         //Serial.println("string_manager.idle()");
     }
 
@@ -124,12 +136,11 @@ void StringPeriphery::idle()
         temp_val_int2 = max6675_temp_cam_intern_2.getTemperature();
         temp_val_ext = max6675_temp_cam_ext.getTemperature();
         time_measure_temp = cur_time;
-
         manage_heat_duty();
     }
     //--------------------------------------------------------
      unsigned long dt_enc = (cur_time- time_measure_enc);
-     if(dt_enc>5)
+     if(dt_enc>10)
      {
         string_cur_pos = get_pos();
         int d_pos = string_last_pos - string_cur_pos;
@@ -395,5 +406,69 @@ void StringPeriphery::set_heaters_ind(int v)
 void StringPeriphery::set_reporting(bool state){
     reporting = state;
 };
+
+
+void StringPeriphery::manage_motion()
+{
+    int move = 0;
+    feedrate_mm_s = 10;
+    
+    
+    if(step_switch == 0 ) 
+    {
+        step_switch = 1;
+        if(dir_switch == 0 ) dir_switch = 1;
+        else dir_switch = 0;
+    }    
+    else step_switch = 0;
+
+    if(planner.movesplanned()<buff_m)
+    {
+        if(recuperator_move == 1) { k_x = manage_axis(X_AXIS,vibr_x,k_x,k_m_x,dir_x,vibr_a_x,X_STEP_PIN,X_DIR_PIN);    move++;  };
+        if(karet_move == 1) { k_y =manage_axis(Y_AXIS,vibr_y,k_y,k_m_y,dir_y,vibr_a_y,X_STEP_PIN,X_DIR_PIN);    move++;  };
+        if(gateway_move == 1) {k_z = manage_axis(Z_AXIS,vibr_z,k_z,k_m_z,dir_z,vibr_a_z,X_STEP_PIN,X_DIR_PIN);    move++;  };
+        if(string_move == 1) { k_e =manage_axis(E_AXIS,vibr_e,k_e,k_m_e,dir_e,vibr_a_e,X_STEP_PIN,X_DIR_PIN);    move++;  };
+        if(feed_pound_move == 1) {k_a = manage_axis(I_AXIS,vibr_a,k_a,k_m_a,dir_a,vibr_a_a,X_STEP_PIN,X_DIR_PIN);    move++;  };
+        if(string_move_second == 1) { k_b =manage_axis(J_AXIS,vibr_b,k_b,k_m_b,dir_b,vibr_a_b,X_STEP_PIN,X_DIR_PIN);    move++;  };
+
+        if(move>0){
+            prepare_line_to_destination(); 
+            //planner.synchronize();
+        };
+    }
+    //}
+};
+
+int StringPeriphery::manage_axis(AxisEnum Axis,  int vibr, int k, int k_m,int dir,int _vibr_a, uint16_t step_mot,uint16_t dir_mot){
+    int sign = 1;
+
+    if(vibr==1) 
+    {
+        if(k_m - k <= _vibr_a)
+        { 
+            sign=-1; 
+            k = 0;
+        };
+        //digitalWrite(step_mot,step_switch);
+       // digitalWrite(dir_mot,dir_switch);
+    }
+    /*Serial.print(vibr);
+    Serial.print(" ");
+    Serial.print(k);
+    Serial.print(" ");
+    Serial.print(k_m);
+    Serial.print(" ");
+    Serial.print(dir);
+    Serial.print(" ");
+    Serial.print(_vibr_a);
+    Serial.print(" ");
+    Serial.print(sign);
+    Serial.println(" ");*/
+    destination[Axis] = current_position[Axis] + dir*sign*dist_m; 
+    k++;
+    return k;
+};
+
+
 
 

@@ -38,6 +38,8 @@ TWIBus::TWIBus() {
     #if PINS_EXIST(I2C_SCL, I2C_SDA) && DISABLED(SOFT_I2C_EEPROM)
       Wire.setSDA(pin_t(I2C_SDA_PIN));
       Wire.setSCL(pin_t(I2C_SCL_PIN));
+      //Serial.println();
+      //SERIAL_ECHOPGM("sda set");
     #endif
 
     Wire.begin();                   // No address joins the BUS as the master
@@ -47,6 +49,7 @@ TWIBus::TWIBus() {
     Wire.begin(I2C_SLAVE_ADDRESS);  // Join the bus as a slave
 
   #endif
+ // SERIAL_ECHOPGM("twibus");
   reset();
 }
 
