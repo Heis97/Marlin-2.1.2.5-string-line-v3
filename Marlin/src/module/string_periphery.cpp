@@ -13,7 +13,12 @@ StringPeriphery  string_manager;
 void StringPeriphery::init()
 {
     mux_iic.begin(112U,Wire);
-    
+    pinMode(DT_HX711_PIN,INPUT);
+   pinMode(CL_HX711_PIN,OUTPUT);
+    tensosensor.begin(DT_HX711_PIN,CL_HX711_PIN);
+    //tensosensor.set_scale(127.15);
+    //tensosensor.set_raw_mode();
+    //tensosensor.tare();
   mcp4725_hv_v.begin();
   mcp4725_hv_v.setValue(0);
 
@@ -109,7 +114,9 @@ void StringPeriphery::idle()
     {
         time_measure = cur_time;
         moves_planned =  planner.movesplanned();
+        force_string = tensosensor.read();
         report_state();
+        
         /*if(swap){
             digitalWrite(PB8,1);
             
@@ -256,6 +263,8 @@ void StringPeriphery::report_state()
     Serial.print(duty_1);
     Serial.print(" ");
     Serial.print(duty_2);
+    Serial.print(" ");
+    Serial.print(force_string);
     Serial.println(" ");
 };
 

@@ -11,6 +11,7 @@
 
 #include "../libs/MCP4725.h"
 #include "../libs/ADS1X15.h"
+#include "../libs/HX711.h"
 #include "../libs/SparkFun_I2C_Mux_Arduino_Library.h"
 
 /*
@@ -19,7 +20,8 @@
   #define TEMP_0_MISO_PIN                   PA6
   #define TEMP_0_MOSI_PIN                   PA7
 */
-
+#define DT_HX711_PIN PE14
+#define CL_HX711_PIN PE15
 
 class StringPeriphery {
 
@@ -30,6 +32,7 @@ MCP4725 mcp4725_hv_v = MCP4725(0x61);
 MCP4725 mcp4725_press = MCP4725(0x60);
 ADS1015 analog_inp = ADS1015(0x48);
 QWIICMUX mux_iic = QWIICMUX();
+HX711 tensosensor = HX711();
 //Adafruit_MAX31865_sw max_test1 = Adafruit_MAX31865_sw(TEMP_0_CS_PIN ,TEMP_0_MOSI_PIN,TEMP_0_MISO_PIN,TEMP_0_SCK_PIN);
 //AS5048A a5048_lin = AS5048A(ENC_LIN_CS_PIN ,TEMP_0_MOSI_PIN,TEMP_0_MISO_PIN,TEMP_0_SCK_PIN);
 AS5600 as5600_lin = AS5600();
@@ -153,6 +156,8 @@ int dir_b = 1;
 
 int step_switch = 0;
 int dir_switch = 0;
+
+float force_string = 0;
 
 private:
 
