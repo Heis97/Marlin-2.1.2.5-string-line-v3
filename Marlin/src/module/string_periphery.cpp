@@ -15,10 +15,10 @@ void StringPeriphery::init()
     mux_iic.begin(112U,Wire);
     pinMode(DT_HX711_PIN,INPUT);
    pinMode(CL_HX711_PIN,OUTPUT);
-    tensosensor.begin(DT_HX711_PIN,CL_HX711_PIN);
+    tensosensor.begin(DT_HX711_PIN,CL_HX711_PIN,true);
     //tensosensor.set_scale(127.15);
     //tensosensor.set_raw_mode();
-    //tensosensor.tare();
+    tensosensor.tare();
   mcp4725_hv_v.begin();
   mcp4725_hv_v.setValue(0);
 
@@ -109,11 +109,12 @@ void StringPeriphery::idle()
     unsigned long cur_time = millis();
     unsigned long dt = (cur_time- time_measure);
     //SERIAL_ECHOLNPGM("dt",dt);
-    
+    unsigned long dt_enc = (cur_time- time_measure_enc);
+    unsigned long dt_temp = (cur_time- time_measure_temp);
     if(dt>20)
     {
         time_measure = cur_time;
-        moves_planned =  planner.movesplanned();
+        //moves_planned =  planner.movesplanned();
         force_string = tensosensor.read();
         report_state();
         
@@ -129,12 +130,23 @@ void StringPeriphery::idle()
         }*/
         //Serial.println("string_manager.idle()");
     }
+    else if(dt_enc>10)
+     {
+      /*  string_cur_pos = get_pos();
+        int d_pos = string_last_pos - string_cur_pos;
+        if(d_pos>2000) d_pos = (4096 - string_last_pos )+ string_cur_pos;
+        else if(d_pos<(-2000)) d_pos = (4096 + string_last_pos )- string_cur_pos;
+        string_lenght = string_lenght + d_pos;
+
+        string_last_pos = string_cur_pos;
+        time_measure_enc = cur_time;*/
+     }
 
     //--------------------------------------------------------
-    unsigned long dt_temp = (cur_time- time_measure_temp);
-    if(dt_temp>period_manage_ms)
+    
+    else if(dt_temp>period_manage_ms)
     {
-        pressure = get_v_press();
+       /* pressure = get_v_press();
         HV = get_v_hv();// mcp4725_hv_v.getValue();
         max6675_temp_cam_ext.read(); 
         max6675_temp_cam_intern_1.read(); 
@@ -143,21 +155,11 @@ void StringPeriphery::idle()
         temp_val_int2 = max6675_temp_cam_intern_2.getTemperature();
         temp_val_ext = max6675_temp_cam_ext.getTemperature();
         time_measure_temp = cur_time;
-        manage_heat_duty();
+        manage_heat_duty();*/
     }
     //--------------------------------------------------------
-     unsigned long dt_enc = (cur_time- time_measure_enc);
-     if(dt_enc>10)
-     {
-        string_cur_pos = get_pos();
-        int d_pos = string_last_pos - string_cur_pos;
-        if(d_pos>2000) d_pos = (4096 - string_last_pos )+ string_cur_pos;
-        else if(d_pos<(-2000)) d_pos = (4096 + string_last_pos )- string_cur_pos;
-        string_lenght = string_lenght + d_pos;
-
-        string_last_pos = string_cur_pos;
-        time_measure_enc = cur_time;
-     }
+     
+     
 
      
 };
@@ -233,7 +235,7 @@ void StringPeriphery::set_heater_3(int v)
 
 void StringPeriphery::report_state()
 {
-    Serial.print("string: ");
+   /* Serial.print("string: ");
     Serial.print(temp_val_int1);
     Serial.print(" ");
     Serial.print(temp_val_int2);
@@ -263,7 +265,7 @@ void StringPeriphery::report_state()
     Serial.print(duty_1);
     Serial.print(" ");
     Serial.print(duty_2);
-    Serial.print(" ");
+    Serial.print(" ");*/
     Serial.print(force_string);
     Serial.println(" ");
 };

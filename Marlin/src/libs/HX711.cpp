@@ -12,7 +12,7 @@
 
 HX711::HX711()
 {
-  _gain     = HX711_CHANNEL_A_GAIN_128;
+  _gain     = HX711_CHANNEL_A_GAIN_64;
   _offset   = 0;
   _scale    = 1;
   _lastTimeRead = 0;
@@ -113,7 +113,7 @@ float HX711::read()
   } v;
 
   //  blocking part ...
-  noInterrupts();
+  //noInterrupts();
 
   //  Pulse the clock pin 24 times to read the data.
   //  v.data[2] = shiftIn(_dataPin, _clockPin, MSBFIRST);
@@ -151,7 +151,7 @@ float HX711::read()
     m--;
   }
 
-  interrupts();
+  //interrupts();
   //  yield();
 
   //  SIGN extend
