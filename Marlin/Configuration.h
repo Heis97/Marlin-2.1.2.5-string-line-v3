@@ -171,7 +171,7 @@
 //#define Z4_DRIVER_TYPE A4988
 #define I_DRIVER_TYPE  TMC2209
 #define J_DRIVER_TYPE  TMC2209
-//#define K_DRIVER_TYPE  A4988
+#define K_DRIVER_TYPE  TMC2209
 //#define U_DRIVER_TYPE  A4988
 //#define V_DRIVER_TYPE  A4988
 //#define W_DRIVER_TYPE  A4988
@@ -1065,7 +1065,7 @@
 //#define USE_ZMIN_PLUG
 #define USE_IMIN_PLUG
 #define USE_JMIN_PLUG
-//#define USE_KMIN_PLUG
+#define USE_KMIN_PLUG
 //#define USE_UMIN_PLUG
 //#define USE_VMIN_PLUG
 //#define USE_WMIN_PLUG
@@ -1196,14 +1196,14 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 100, 100, 100, 100 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 100, 100,100, 100, 100, 100 }
 
 /**
  * Default Max Feed Rate (linear=mm/s, rotational=°/s)
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 20, 20, 20,  20,20,20 }
+#define DEFAULT_MAX_FEEDRATE          { 20, 20, 20,  20,20,20,20 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1216,7 +1216,7 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 100000, 100000,  100000,100000,100000,  100000 }
+#define DEFAULT_MAX_ACCELERATION      { 100000, 100000,  100000,100000,100000,100000,  100000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1642,7 +1642,7 @@
 #define E_ENABLE_ON 0 // For all extruders
 #define I_ENABLE_ON 0
 #define J_ENABLE_ON 0
-//#define K_ENABLE_ON 0
+#define K_ENABLE_ON 0
 //#define U_ENABLE_ON 0
 //#define V_ENABLE_ON 0
 //#define W_ENABLE_ON 0
@@ -1675,7 +1675,7 @@
 #define INVERT_Z_DIR false
 #define INVERT_I_DIR true
 #define INVERT_J_DIR false
-//#define INVERT_K_DIR false
+#define INVERT_K_DIR false
 //#define INVERT_U_DIR false
 //#define INVERT_V_DIR false
 //#define INVERT_W_DIR false
@@ -1716,7 +1716,7 @@
 #define Z_HOME_DIR 1
 #define I_HOME_DIR -1
 #define J_HOME_DIR -1
-//#define K_HOME_DIR -1
+#define K_HOME_DIR -1
 //#define U_HOME_DIR -1
 //#define V_HOME_DIR -1
 //#define W_HOME_DIR -1
@@ -1738,8 +1738,8 @@
 #define I_MAX_POS 47
 #define J_MIN_POS 0
 #define J_MAX_POS 50
-//#define K_MIN_POS 0
-//#define K_MAX_POS 50
+#define K_MIN_POS 0
+#define K_MAX_POS 50
 //#define U_MIN_POS 0
 //#define U_MAX_POS 50
 //#define V_MIN_POS 0
@@ -2130,7 +2130,7 @@
 #endif
 
 // Homing speeds (linear=mm/min, rotational=°/min)
-#define HOMING_FEEDRATE_MM_M { (3*60), (3*60), (3*60),(3*60), (3*60) }
+#define HOMING_FEEDRATE_MM_M { (3*60), (3*60), (3*60),(3*60),(3*60), (3*60) }
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS

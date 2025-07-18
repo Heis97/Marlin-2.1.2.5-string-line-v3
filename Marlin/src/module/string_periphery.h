@@ -20,8 +20,8 @@
   #define TEMP_0_MISO_PIN                   PA6
   #define TEMP_0_MOSI_PIN                   PA7
 */
-#define DT_HX711_PIN PE14
-#define CL_HX711_PIN PE15
+#define DT_HX711_PIN PE12
+#define CL_HX711_PIN PE13
 
 class StringPeriphery {
 
@@ -101,6 +101,8 @@ int manage_axis(AxisEnum Axis, int vibr, int k, int k_m,int dir,int vibr_a, uint
 
 
 //-----------------------------------
+void get_request_i2c(int adr);
+//---------------------------
 long string_lenght = 0;
 float kp_1 = 0.05;
 float kp_2 = 0.05;
@@ -112,6 +114,7 @@ int feed_pound_move = 0;
 int recuperator_move = 0;
 int karet_move = 0;
 int string_move = 0;
+int string_vibro = 0;
 int string_move_second = 0;
 
 float dist_m = 0.05;
@@ -152,6 +155,12 @@ int vibr_b = 0;
 int vibr_a_b = 0;
 int k_b = 0;
 int dir_b = 1;
+
+int k_m_c = 2;
+int vibr_c = 0;
+int vibr_a_c = 0;
+int k_c = 0;
+int dir_c = 1;
 
 
 int step_switch = 0;

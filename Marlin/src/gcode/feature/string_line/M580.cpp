@@ -85,7 +85,7 @@ void GcodeSuite::M580() {
 //-------------------B-----------------------
   if (parser.seen('B')) 
   {
-        string_manager.string_move_second = parser.intval('B');
+        string_manager.string_vibro = parser.intval('B');
   } 
 
   if (parser.seen('B') && parser.seen('V')) 
@@ -96,5 +96,18 @@ void GcodeSuite::M580() {
   {
         string_manager.dir_b = parser.intval('D');
   } 
+//-------------------C-----------------------
+  if (parser.seen('C')) 
+  {
+        string_manager.string_move_second = parser.intval('C');
+  } 
 
+  if (parser.seen('C') && parser.seen('V')) 
+  {
+        string_manager.vibr_c = parser.intval('V');
+  } 
+ if (parser.seen('C') && parser.seen('D')) 
+  {
+        string_manager.dir_c = parser.intval('D');
+  } 
 }

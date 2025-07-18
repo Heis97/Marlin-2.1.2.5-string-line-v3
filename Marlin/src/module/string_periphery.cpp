@@ -13,12 +13,7 @@ StringPeriphery  string_manager;
 void StringPeriphery::init()
 {
     mux_iic.begin(112U,Wire);
-    pinMode(DT_HX711_PIN,INPUT);
-   pinMode(CL_HX711_PIN,OUTPUT);
-    tensosensor.begin(DT_HX711_PIN,CL_HX711_PIN,true);
-    //tensosensor.set_scale(127.15);
-    //tensosensor.set_raw_mode();
-    tensosensor.tare();
+   
   mcp4725_hv_v.begin();
   mcp4725_hv_v.setValue(0);
 
@@ -53,6 +48,12 @@ void StringPeriphery::init()
 
   mux_iic.begin();
   //a5048_test.SPI_setup();
+  // pinMode(DT_HX711_PIN,INPUT);
+   //pinMode(CL_HX711_PIN,OUTPUT);
+    //tensosensor.begin(DT_HX711_PIN,CL_HX711_PIN);
+    //tensosensor.set_scale(127.15);
+    //tensosensor.set_raw_mode();
+    //tensosensor.tare();
 };
 
 
@@ -114,8 +115,8 @@ void StringPeriphery::idle()
     if(dt>20)
     {
         time_measure = cur_time;
-        //moves_planned =  planner.movesplanned();
-        force_string = tensosensor.read();
+        moves_planned =  planner.movesplanned();
+        
         report_state();
         
         /*if(swap){
@@ -130,23 +131,25 @@ void StringPeriphery::idle()
         }*/
         //Serial.println("string_manager.idle()");
     }
-    else if(dt_enc>10)
+    if(dt_enc>50)
      {
-      /*  string_cur_pos = get_pos();
+        string_cur_pos = get_pos();
         int d_pos = string_last_pos - string_cur_pos;
         if(d_pos>2000) d_pos = (4096 - string_last_pos )+ string_cur_pos;
         else if(d_pos<(-2000)) d_pos = (4096 + string_last_pos )- string_cur_pos;
         string_lenght = string_lenght + d_pos;
 
         string_last_pos = string_cur_pos;
-        time_measure_enc = cur_time;*/
+        
+       time_measure_enc = cur_time;
      }
 
     //--------------------------------------------------------
     
-    else if(dt_temp>period_manage_ms)
+    if(dt_temp>period_manage_ms)
     {
-       /* pressure = get_v_press();
+        get_request_i2c(70);
+        pressure = get_v_press();
         HV = get_v_hv();// mcp4725_hv_v.getValue();
         max6675_temp_cam_ext.read(); 
         max6675_temp_cam_intern_1.read(); 
@@ -154,15 +157,62 @@ void StringPeriphery::idle()
         temp_val_int1 = max6675_temp_cam_intern_1.getTemperature();
         temp_val_int2 = max6675_temp_cam_intern_2.getTemperature();
         temp_val_ext = max6675_temp_cam_ext.getTemperature();
-        time_measure_temp = cur_time;
-        manage_heat_duty();*/
+       
+        manage_heat_duty();
+         time_measure_temp = cur_time;
     }
+
+
     //--------------------------------------------------------
      
      
 
      
 };
+int i2c_req_divider = 100;
+int i2c_req_count = 100;
+char rec_i2c[10]; 
+void StringPeriphery::get_request_i2c(int adr)
+{
+  //if(i2c_req_count>i2c_req_divider)
+  {
+    char rec_i2c_int[10];// = "0000000000";
+    //rec_i2c[10];
+    int i_m =0; 
+    int i_st =0; 
+    int i_int =0; 
+    bool st_done = false;
+    Wire.requestFrom(adr,10);
+    while(Wire.available() && i_m<10) {  // Read Received Datat From Slave Device
+      int b = Wire.read();
+      i_m++;
+      if(b<254)
+      {
+        if(!st_done )
+        {
+          i_st = i_m;
+          st_done = true;
+        }
+        rec_i2c_int[i_m] = (char)b;
+        i_int++;
+        /*Serial.print(b);
+        Serial.print(" ");
+        Serial.println(rec_i2c_int[i_m] );*/
+      }
+    }
+    int ki=0;
+    for(int i=i_st; i<i_int;i++)
+    {
+      rec_i2c[ki] = rec_i2c_int[i];ki++;
+    }
+    
+    //Serial.println( rec_i2c);
+    //Serial.println(i_m);
+    i2c_req_count = 0;
+    }
+  i2c_req_count++;
+};
+
 void StringPeriphery::set_hv_v(uint16_t v)
 {
     mcp4725_hv_v.setValue(v);
@@ -235,7 +285,7 @@ void StringPeriphery::set_heater_3(int v)
 
 void StringPeriphery::report_state()
 {
-   /* Serial.print("string: ");
+    Serial.print("string: ");
     Serial.print(temp_val_int1);
     Serial.print(" ");
     Serial.print(temp_val_int2);
@@ -265,8 +315,8 @@ void StringPeriphery::report_state()
     Serial.print(duty_1);
     Serial.print(" ");
     Serial.print(duty_2);
-    Serial.print(" ");*/
-    Serial.print(force_string);
+    Serial.print(" ");
+    Serial.print(rec_i2c);
     Serial.println(" ");
 };
 
@@ -440,7 +490,8 @@ void StringPeriphery::manage_motion()
         if(gateway_move == 1) {k_z = manage_axis(Z_AXIS,vibr_z,k_z,k_m_z,dir_z,vibr_a_z,X_STEP_PIN,X_DIR_PIN);    move++;  };
         if(string_move == 1) { k_e =manage_axis(E_AXIS,vibr_e,k_e,k_m_e,dir_e,vibr_a_e,X_STEP_PIN,X_DIR_PIN);    move++;  };
         if(feed_pound_move == 1) {k_a = manage_axis(I_AXIS,vibr_a,k_a,k_m_a,dir_a,vibr_a_a,X_STEP_PIN,X_DIR_PIN);    move++;  };
-        if(string_move_second == 1) { k_b =manage_axis(J_AXIS,vibr_b,k_b,k_m_b,dir_b,vibr_a_b,X_STEP_PIN,X_DIR_PIN);    move++;  };
+        if(string_vibro == 1) { k_b =manage_axis(J_AXIS,vibr_b,k_b,k_m_b,dir_b,vibr_a_b,X_STEP_PIN,X_DIR_PIN);    move++;  };
+        if(string_move_second == 1) { k_c =manage_axis(K_AXIS,vibr_c,k_c,k_m_c,dir_c,vibr_a_c,X_STEP_PIN,X_DIR_PIN);    move++;  };
 
         if(move>0){
             prepare_line_to_destination(); 

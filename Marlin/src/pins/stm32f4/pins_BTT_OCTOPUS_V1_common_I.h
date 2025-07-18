@@ -139,6 +139,7 @@
 #endif
 #define I_STOP_PIN                  I_DIAG_PIN  
 #define J_STOP_PIN                  E2_DIAG_PIN
+#define K_STOP_PIN                  E1_DIAG_PIN
 //
 // Probe enable
 //
@@ -211,11 +212,11 @@
   #define E0_CS_PIN                         PF2
 #endif
 
-#define E1_STEP_PIN                         PC13  // MOTOR 5
-#define E1_DIR_PIN                          PF0
-#define E1_ENABLE_PIN                       PF1
-#ifndef E1_CS_PIN
-  #define E1_CS_PIN                         PE4
+#define K_STEP_PIN                         PC13  // MOTOR 5
+#define K_DIR_PIN                          PF0
+#define K_ENABLE_PIN                       PF1
+#ifndef K_CS_PIN
+  #define K_CS_PIN                         PE4
 #endif
 
 #define I_STEP_PIN                         PE2   // MOTOR 6
@@ -306,8 +307,8 @@
   #define Z_SERIAL_TX_PIN                   PC6
   #define I_SERIAL_TX_PIN                  PC7
   #define E0_SERIAL_TX_PIN                  PF2
-  #define E1_SERIAL_TX_PIN                  PE4
-  #define E2_SERIAL_TX_PIN                  PE1
+  #define K_SERIAL_TX_PIN                  PE4
+  #define J_SERIAL_TX_PIN                  PE1
   #define E3_SERIAL_TX_PIN                  PD3
 
   // Reduce baud rate to improve software serial reliability

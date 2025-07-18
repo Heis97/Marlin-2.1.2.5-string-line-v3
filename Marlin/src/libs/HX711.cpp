@@ -9,7 +9,7 @@
 
 #include "HX711.h"
 
-
+#define DELAY_BUS 10
 HX711::HX711()
 {
   _gain     = HX711_CHANNEL_A_GAIN_64;
@@ -104,7 +104,7 @@ bool HX711::wait_ready_timeout(uint32_t timeout, uint32_t ms)
 float HX711::read()
 {
   //  this BLOCKING wait takes most time...
-  while (digitalRead(_dataPin) == HIGH) yield();
+  if (digitalRead(_dataPin) == HIGH) return 0;
 
   union
   {
@@ -144,10 +144,10 @@ float HX711::read()
     //  delayMicroSeconds(1) is needed for fast processors
     //  T2  >= 0.2 us
     digitalWrite(_clockPin, HIGH);
-    if (_fastProcessor) delayMicroseconds(1);
+    if (_fastProcessor) delayMicroseconds(DELAY_BUS);
     digitalWrite(_clockPin, LOW);
     //  keep duty cycle ~50%
-    if (_fastProcessor) delayMicroseconds(1);
+    if (_fastProcessor) delayMicroseconds(DELAY_BUS);
     m--;
   }
 
@@ -465,14 +465,14 @@ uint8_t HX711::_shiftIn()
   {
     digitalWrite(clk, HIGH);
     //  T2  >= 0.2 us
-    if(_fastProcessor) delayMicroseconds(1);
+    if(_fastProcessor) delayMicroseconds(DELAY_BUS);
     if (digitalRead(data) == HIGH)
     {
       value |= mask;
     }
     digitalWrite(clk, LOW);
     //  keep duty cycle ~50%
-    if(_fastProcessor) delayMicroseconds(1);
+    if(_fastProcessor) delayMicroseconds(DELAY_BUS);
     mask >>= 1;
   }
   return value;
