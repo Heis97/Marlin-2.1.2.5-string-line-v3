@@ -96,7 +96,7 @@ void set_reporting(bool state);
 //M580----------------------------------- 
 
 void manage_motion();
-int manage_axis(AxisEnum Axis, int vibr, int k, int k_m,int dir,int vibr_a, uint16_t step_mot,uint16_t dir_mot);
+int manage_axis(AxisEnum Axis, int vibr, int k, int k_m,int dir,int vibr_a);
 
 
 

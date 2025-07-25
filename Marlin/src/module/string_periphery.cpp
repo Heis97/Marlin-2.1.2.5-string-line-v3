@@ -485,13 +485,13 @@ void StringPeriphery::manage_motion()
 
     if(planner.movesplanned()<buff_m)
     {
-        if(recuperator_move == 1) { k_x = manage_axis(X_AXIS,vibr_x,k_x,k_m_x,dir_x,vibr_a_x,X_STEP_PIN,X_DIR_PIN);    move++;  };
-        if(karet_move == 1) { k_y =manage_axis(Y_AXIS,vibr_y,k_y,k_m_y,dir_y,vibr_a_y,X_STEP_PIN,X_DIR_PIN);    move++;  };
-        if(gateway_move == 1) {k_z = manage_axis(Z_AXIS,vibr_z,k_z,k_m_z,dir_z,vibr_a_z,X_STEP_PIN,X_DIR_PIN);    move++;  };
-        if(string_move == 1) { k_e =manage_axis(E_AXIS,vibr_e,k_e,k_m_e,dir_e,vibr_a_e,X_STEP_PIN,X_DIR_PIN);    move++;  };
-        if(feed_pound_move == 1) {k_a = manage_axis(I_AXIS,vibr_a,k_a,k_m_a,dir_a,vibr_a_a,X_STEP_PIN,X_DIR_PIN);    move++;  };
-        if(string_vibro == 1) { k_b =manage_axis(J_AXIS,vibr_b,k_b,k_m_b,dir_b,vibr_a_b,X_STEP_PIN,X_DIR_PIN);    move++;  };
-        if(string_move_second == 1) { k_c =manage_axis(K_AXIS,vibr_c,k_c,k_m_c,dir_c,vibr_a_c,X_STEP_PIN,X_DIR_PIN);    move++;  };
+        if(recuperator_move == 1) { k_x = manage_axis(X_AXIS,vibr_x,k_x,k_m_x,dir_x,vibr_a_x);    move++;  };
+        if(karet_move == 1) { k_y =manage_axis(Y_AXIS,vibr_y,k_y,k_m_y,dir_y,vibr_a_y);    move++;  };
+        if(gateway_move == 1) {k_z = manage_axis(Z_AXIS,vibr_z,k_z,k_m_z,dir_z,vibr_a_z);    move++;  };
+        if(string_move == 1) { k_e =manage_axis(E_AXIS,vibr_e,k_e,k_m_e,dir_e,vibr_a_e);    move++;  };
+        if(feed_pound_move == 1) {k_a = manage_axis(I_AXIS,vibr_a,k_a,k_m_a,dir_a,vibr_a_a);    move++;  };
+        if(string_vibro == 1) { k_b =manage_axis(J_AXIS,vibr_b,k_b,k_m_b,dir_b,vibr_a_b);    move++;  };
+        if(string_move_second == 1) { k_c =manage_axis(K_AXIS,vibr_c,k_c,k_m_c,dir_c,vibr_a_c);    move++;  };
 
         if(move>0){
             prepare_line_to_destination(); 
@@ -501,7 +501,7 @@ void StringPeriphery::manage_motion()
     //}
 };
 
-int StringPeriphery::manage_axis(AxisEnum Axis,  int vibr, int k, int k_m,int dir,int _vibr_a, uint16_t step_mot,uint16_t dir_mot){
+int StringPeriphery::manage_axis(AxisEnum Axis,  int vibr, int k, int k_m,int dir,int _vibr_a){
     int sign = 1;
 
     if(vibr==1) 
