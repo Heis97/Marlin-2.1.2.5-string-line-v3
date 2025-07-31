@@ -133,11 +133,11 @@ void StringPeriphery::idle()
     }
     if(dt_enc>50)
      {
-        string_cur_pos = get_pos();
-        int d_pos = string_last_pos - string_cur_pos;
-        if(d_pos>2000) d_pos = (4096 - string_last_pos )+ string_cur_pos;
-        else if(d_pos<(-2000)) d_pos = (4096 + string_last_pos )- string_cur_pos;
-        string_lenght = string_lenght + d_pos;
+        //string_cur_pos = get_pos();
+        //int d_pos = string_last_pos - string_cur_pos;
+        //if(d_pos>2000) d_pos = (4096 - string_last_pos )+ string_cur_pos;
+        //else if(d_pos<(-2000)) d_pos = (4096 + string_last_pos )- string_cur_pos;
+        //string_lenght = string_lenght + d_pos;
 
         string_last_pos = string_cur_pos;
         
@@ -148,7 +148,7 @@ void StringPeriphery::idle()
     
     if(dt_temp>period_manage_ms)
     {
-        get_request_i2c(70);
+        //get_request_i2c(70);
         pressure = get_v_press();
         HV = get_v_hv();// mcp4725_hv_v.getValue();
         max6675_temp_cam_ext.read(); 
